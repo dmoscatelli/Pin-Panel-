@@ -1,5 +1,10 @@
 class PinsController < ApplicationController
+
+
 before_action :find_pin, only: [:show, :edit, :update, :destroy, :upvote]
+before_action :authenticate_user!, except: [:index, :show]
+before_filter :validate_user, only: [:edit, :update, :delete]
+
 
 	def index
 		@pins = Pin.all.order('created_at DESC')
@@ -57,6 +62,10 @@ before_action :find_pin, only: [:show, :edit, :update, :destroy, :upvote]
 	def find_pin
 		@pin = Pin.find(params[:id])
 	end
+
+	def validate_user		
+   redirect_to root_url, notice: "You can't do that gangsta -- that is some other homies shit" unless current_user.email == @pin.user.email  
+ 	end
 
 
 end
